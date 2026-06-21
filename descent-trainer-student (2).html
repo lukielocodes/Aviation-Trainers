@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top of Descent — Practice</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#f4f8fc; --card:#ffffff;
+    --blue:#1f7fc4; --blue-lt:#89bbe5; --blue-dk:#155b8f;
+    --magenta:#c0398f; --green-ink:#1f8a4c;
+    --ink:#16242e; --dim:#5c7080; --line:#d6e3ee;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Barlow',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding:18px 16px 64px;}
+  .wrap{max-width:860px;margin:0 auto;}
+
+  .brand{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--blue-lt);opacity:.6;margin-bottom:10px;}
+
+  header{margin-bottom:22px;}
+  .eyebrow{font-family:'Share Tech Mono',monospace;color:var(--blue);letter-spacing:.32em;font-size:12px;text-transform:uppercase;}
+  h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(32px,6vw,52px);line-height:.95;margin:4px 0 6px;color:var(--ink);}
+  h1 span{color:var(--blue);}
+  .sub{color:var(--dim);max-width:64ch;font-size:15px;}
+
+  /* ---------- instructions ---------- */
+  .howto{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:10px;margin-top:22px;box-shadow:0 4px 14px rgba(31,127,196,.08);overflow:hidden;}
+  .howto summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;user-select:none;}
+  .howto summary::-webkit-details-marker{display:none;}
+  .howto .summary-title{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--blue-dk);font-size:20px;}
+  .howto .chev{color:var(--blue);font-size:15px;transition:transform .2s ease;}
+  .howto[open] .chev{transform:rotate(90deg);}
+  .howto summary:hover .summary-title{color:var(--blue);}
+  .howto .howto-body{padding:0 24px 20px;}
+  .howto p{font-size:15px;line-height:1.6;margin-bottom:12px;}
+  .howto ol{margin:0 0 12px 22px;}
+  .howto li{font-size:15px;line-height:1.6;margin-bottom:8px;}
+  .howto .formula{background:#eef5fb;border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--blue-dk);margin:12px 0;line-height:1.7;}
+  .howto .tip{font-size:14px;color:var(--dim);font-style:italic;margin-bottom:0;}
+
+  /* ---------- instrument cards ---------- */
+  .panel{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px;}
+  @media(max-width:640px){.panel{grid-template-columns:1fr;}}
+  .instrument{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--blue);border-radius:10px;padding:18px;box-shadow:0 4px 14px rgba(31,127,196,.08);}
+  .inst-label{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;}
+
+  .alt-face{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center;}
+  .digital{font-family:'Share Tech Mono',monospace;text-align:center;}
+  .digital .big{font-size:40px;color:var(--ink);background:#eef5fb;border:1px solid var(--line);border-radius:6px;padding:8px 14px;letter-spacing:.06em;font-weight:600;}
+  .digital .unit{font-size:11px;color:var(--dim);letter-spacing:.25em;margin-top:8px;}
+  .tpa-val{font-family:'Share Tech Mono',monospace;font-size:46px;color:var(--magenta);background:#fbeef6;border:1px solid #f0cfe3;border-radius:6px;padding:14px;text-align:center;letter-spacing:.04em;font-weight:600;}
+  .tpa-note{color:var(--dim);font-size:13px;margin-top:10px;text-align:center;}
+
+  /* ---------- question ---------- */
+  .question{background:#eef5fb;border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:10px;padding:22px;margin-top:18px;}
+  .q-text{font-size:17px;line-height:1.55;color:var(--ink);}
+  .q-text b{color:var(--blue-dk);}
+  .actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;}
+  button.act{font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:16px;cursor:pointer;border-radius:8px;padding:12px 22px;border:1px solid var(--blue);background:#fff;color:var(--blue);transition:transform .08s,background .15s,color .15s;}
+  button.act:hover{background:#e3f0fa;}
+  button.act:active{transform:translateY(1px);}
+  button.act.primary{background:var(--blue);color:#fff;border-color:var(--blue);}
+  button.act.primary:hover{background:var(--blue-dk);}
+  button.act:focus-visible{outline:2px solid var(--blue-dk);outline-offset:2px;}
+  .answer{margin-top:18px;border-top:1px dashed var(--line);padding-top:18px;display:none;}
+  .answer.show{display:block;animation:fade .3s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+  .answer h3{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--blue);font-size:15px;margin-bottom:12px;}
+  .calc-row{display:flex;justify-content:space-between;align-items:baseline;font-family:'Share Tech Mono',monospace;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line);color:var(--ink);}
+  .calc-row .lbl{color:var(--dim);}
+  .result{margin-top:14px;background:#e7f5ed;border:1px solid #bfe4cd;border-radius:8px;padding:14px 16px;font-family:'Share Tech Mono',monospace;color:var(--green-ink);font-size:16px;font-weight:600;}
+  .result .answer-num{font-size:30px;display:block;margin-top:4px;}
+  .result .answer-num .alt-form{font-size:18px;opacity:.8;font-weight:500;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">lukielocodes</div>
+  <header>
+    <div class="eyebrow">Procedure Trainer // VFR Arrival</div>
+    <h1>Top of <span>Descent</span> Practice</h1>
+    <p class="sub">Read the two instruments, work the descent math by hand, then check your answer.</p>
+  </header>
+
+  <!-- ====== INSTRUCTIONS ====== -->
+  <details class="howto">
+    <summary><span class="summary-title">How to use this trainer</span><span class="chev">▸</span></summary>
+    <div class="howto-body">
+    <p>This drill builds one skill: figuring out how many minutes before your destination you need to begin a descent so you arrive at the traffic pattern altitude (TPA) — descending at a steady <b>500 feet per minute</b>.</p>
+    <ol>
+      <li><b>Read the Altimeter card.</b> This is your current cruise altitude in feet above sea level (MSL). It's shown both on the round gauge and as a digital number.</li>
+      <li><b>Read the Traffic Pattern Altitude card.</b> This is the altitude (MSL) you need to level off at when you reach the destination's traffic pattern.</li>
+      <li><b>Work the math yourself</b> before peeking. Find how much altitude you need to lose, then how long that takes at 500 ft/min. Write your answer down.</li>
+      <li><b>Click "Show answer"</b> to check your work and see the steps laid out.</li>
+      <li><b>Click "New scenario"</b> for a fresh set of numbers and repeat. Aim to do the math in your head as you get faster.</li>
+    </ol>
+    <p>The method, every time:</p>
+    <div class="formula">
+      altitude to lose = cruise altitude − TPA<br>
+      descent time (min) = altitude to lose ÷ 500
+    </div>
+    <p>That descent time is your answer: it's how many minutes out you start down. On a GPS like the GNS 430, it's also the ETE (estimated time en route) value you watch for — when the ETE counts down to that number, it's time to begin your descent.</p>
+    <p class="tip">Tip: 500 ft/min means you lose 1,000 ft every 2 minutes. So a 4,500 ft descent takes 9 minutes. Try estimating before you reach for a calculator.</p>
+    </div>
+  </details>
+
+  <!-- ====== INSTRUMENT CARDS ====== -->
+  <div class="panel">
+    <div class="instrument">
+      <div class="inst-label">Altimeter — Current Altitude</div>
+      <div class="alt-face">
+        <svg id="altGauge" width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="Altimeter">
+          <circle cx="75" cy="75" r="72" fill="#ffffff" stroke="#1f7fc4" stroke-width="2"/>
+          <g id="ticks" stroke="#16242e" stroke-width="2"></g>
+          <g id="tickLabels" fill="#16242e" font-family="'Share Tech Mono',monospace" font-size="11"></g>
+          <line id="needle100" x1="75" y1="75" x2="75" y2="22" stroke="#1f7fc4" stroke-width="3" stroke-linecap="round"/>
+          <line id="needle1000" x1="75" y1="75" x2="75" y2="38" stroke="#16242e" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="75" cy="75" r="5" fill="#16242e"/>
+        </svg>
+        <div class="digital">
+          <div class="big" id="altVal">0,000</div>
+          <div class="unit">Feet MSL</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instrument">
+      <div class="inst-label">Destination — Traffic Pattern Altitude</div>
+      <div class="tpa-val" id="tpaVal">0,000</div>
+      <div class="tpa-note">Level off here on arrival (feet MSL)</div>
+    </div>
+  </div>
+
+  <!-- ====== QUESTION ====== -->
+  <div class="question">
+    <div class="q-text">
+      You're cruising at <b id="qAlt">—</b> ft. Your destination's traffic pattern
+      altitude is <b id="qTpa">—</b> ft. Descending at <b>500 ft/min</b>, how many
+      minutes before the destination should you start down?
+    </div>
+    <div class="actions">
+      <button class="act primary" id="answerBtn">Show answer</button>
+      <button class="act" id="newBtn">New scenario</button>
+    </div>
+    <div class="answer" id="answerBox">
+      <h3>Working the math</h3>
+      <div class="calc-row"><span class="lbl">Altitude to lose = cruise − TPA</span><span id="cAltLose">—</span></div>
+      <div class="calc-row"><span class="lbl">Descent time = altitude ÷ 500 ft/min</span><span id="cDescTime">—</span></div>
+      <div class="calc-row"><span class="lbl">Start down when ETE reaches…</span><span id="cWhen">—</span></div>
+      <div class="result">Begin descent<span class="answer-num" id="finalAns">— min out</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- altimeter ticks ----------
+  const ticks=document.getElementById('ticks'),labels=document.getElementById('tickLabels');
+  for(let i=0;i<10;i++){
+    const a=(i/10)*2*Math.PI-Math.PI/2;
+    ticks.innerHTML+=`<line x1="${75+Math.cos(a)*64}" y1="${75+Math.sin(a)*64}" x2="${75+Math.cos(a)*72}" y2="${75+Math.sin(a)*72}"/>`;
+    labels.innerHTML+=`<text x="${75+Math.cos(a)*52}" y="${75+Math.sin(a)*52+4}" text-anchor="middle">${i}</text>`;
+  }
+  function setNeedles(alt){
+    document.getElementById('needle100').setAttribute('transform',`rotate(${((alt%1000)/100)/10*360} 75 75)`);
+    document.getElementById('needle1000').setAttribute('transform',`rotate(${((alt%10000)/1000)/10*360} 75 75)`);
+  }
+
+  const fmt=n=>Math.round(n).toLocaleString('en-US');
+  const rand=(lo,hi,step)=>(Math.floor(Math.random()*((hi-lo)/step+1))*step)+lo;
+
+  let cruise, tpa;
+
+  function newScenario(){
+    cruise=rand(3500,9500,500);
+    tpa=rand(800,2500,100);
+    if(tpa>=cruise-1000) tpa=rand(800,1500,100);
+    document.getElementById('altVal').textContent=fmt(cruise);
+    document.getElementById('tpaVal').textContent=fmt(tpa);
+    document.getElementById('qAlt').textContent=fmt(cruise);
+    document.getElementById('qTpa').textContent=fmt(tpa);
+    setNeedles(cruise);
+    document.getElementById('answerBox').classList.remove('show');
+  }
+
+  function showAnswer(){
+    const lose=cruise-tpa;
+    const exact=lose/500;                       // exact minutes
+    const descTime=Math.round(exact*10)/10;     // tenths
+    const mm=Math.floor(exact), ss=Math.round((exact-mm)*60);
+    const clock=`${mm}:${String(ss).padStart(2,'0')}`;
+    document.getElementById('cAltLose').textContent=`${fmt(cruise)} − ${fmt(tpa)} = ${fmt(lose)} ft`;
+    document.getElementById('cDescTime').textContent=`${fmt(lose)} ÷ 500 = ${descTime} min`;
+    document.getElementById('cWhen').textContent=`ETE ${descTime} min`;
+    document.getElementById('finalAns').innerHTML=`ETE ${clock}`;
+    document.getElementById('answerBox').classList.add('show');
+  }
+
+  document.getElementById('answerBtn').addEventListener('click',showAnswer);
+  document.getElementById('newBtn').addEventListener('click',newScenario);
+  newScenario();
+</script>
+</body>
+</html>
