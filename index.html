@@ -26,13 +26,19 @@
   .sub{color:var(--dim);max-width:64ch;font-size:15px;}
 
   /* ---------- instructions ---------- */
-  .howto{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:10px;padding:20px 24px;margin-top:22px;box-shadow:0 4px 14px rgba(31,127,196,.08);}
-  .howto h2{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--blue-dk);font-size:20px;margin-bottom:10px;}
+  .howto{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:10px;margin-top:22px;box-shadow:0 4px 14px rgba(31,127,196,.08);overflow:hidden;}
+  .howto summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;user-select:none;}
+  .howto summary::-webkit-details-marker{display:none;}
+  .howto .summary-title{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--blue-dk);font-size:20px;}
+  .howto .chev{color:var(--blue);font-size:15px;transition:transform .2s ease;}
+  .howto[open] .chev{transform:rotate(90deg);}
+  .howto summary:hover .summary-title{color:var(--blue);}
+  .howto .howto-body{padding:0 24px 20px;}
   .howto p{font-size:15px;line-height:1.6;margin-bottom:12px;}
   .howto ol{margin:0 0 12px 22px;}
   .howto li{font-size:15px;line-height:1.6;margin-bottom:8px;}
   .howto .formula{background:#eef5fb;border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--blue-dk);margin:12px 0;line-height:1.7;}
-  .howto .tip{font-size:14px;color:var(--dim);font-style:italic;}
+  .howto .tip{font-size:14px;color:var(--dim);font-style:italic;margin-bottom:0;}
 
   /* ---------- instrument cards ---------- */
   .panel{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px;}
@@ -66,6 +72,7 @@
   .calc-row .lbl{color:var(--dim);}
   .result{margin-top:14px;background:#e7f5ed;border:1px solid #bfe4cd;border-radius:8px;padding:14px 16px;font-family:'Share Tech Mono',monospace;color:var(--green-ink);font-size:16px;font-weight:600;}
   .result .answer-num{font-size:30px;display:block;margin-top:4px;}
+  .result .answer-num .alt-form{font-size:18px;opacity:.8;font-weight:500;}
 </style>
 </head>
 <body>
@@ -78,8 +85,9 @@
   </header>
 
   <!-- ====== INSTRUCTIONS ====== -->
-  <section class="howto">
-    <h2>How to use this trainer</h2>
+  <details class="howto">
+    <summary><span class="summary-title">How to use this trainer</span><span class="chev">▸</span></summary>
+    <div class="howto-body">
     <p>This drill builds one skill: figuring out how many minutes before your destination you need to begin a descent so you arrive at the traffic pattern altitude (TPA) — descending at a steady <b>500 feet per minute</b>.</p>
     <ol>
       <li><b>Read the Altimeter card.</b> This is your current cruise altitude in feet above sea level (MSL). It's shown both on the round gauge and as a digital number.</li>
@@ -95,7 +103,8 @@
     </div>
     <p>That descent time is your answer: it's how many minutes out you start down. On a GPS like the GNS 430, it's also the ETE (estimated time en route) value you watch for — when the ETE counts down to that number, it's time to begin your descent.</p>
     <p class="tip">Tip: 500 ft/min means you lose 1,000 ft every 2 minutes. So a 4,500 ft descent takes 9 minutes. Try estimating before you reach for a calculator.</p>
-  </section>
+    </div>
+  </details>
 
   <!-- ====== INSTRUMENT CARDS ====== -->
   <div class="panel">
@@ -176,11 +185,15 @@
   }
 
   function showAnswer(){
-    const lose=cruise-tpa, descTime=Math.round(lose/500*10)/10;
+    const lose=cruise-tpa;
+    const exact=lose/500;                       // exact minutes
+    const descTime=Math.round(exact*10)/10;     // tenths
+    const mm=Math.floor(exact), ss=Math.round((exact-mm)*60);
+    const clock=`${mm}:${String(ss).padStart(2,'0')}`;
     document.getElementById('cAltLose').textContent=`${fmt(cruise)} − ${fmt(tpa)} = ${fmt(lose)} ft`;
     document.getElementById('cDescTime').textContent=`${fmt(lose)} ÷ 500 = ${descTime} min`;
     document.getElementById('cWhen').textContent=`ETE ${descTime} min`;
-    document.getElementById('finalAns').textContent=`${descTime} min out`;
+    document.getElementById('finalAns').innerHTML=`ETE ${clock}`;
     document.getElementById('answerBox').classList.add('show');
   }
 
